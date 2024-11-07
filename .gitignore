@@ -1,0 +1,36 @@
+# Ignore les fichiers de logs
+logs/
+*.log
+
+# Ignore les dossiers temporaires
+tmp/
+temp/
+*.tmp
+
+# Ignore les dossiers de configuration spécifiques à Docker
+docker/.env
+docker/data/
+docker/init-scripts/.env
+
+# Ignore les fichiers de sauvegarde
+scripts/sauvegarde/backup.sh
+scripts/sauvegarde/restore.sh
+
+# Ignore les fichiers générés automatiquement
+*.class
+*.exe
+*.o
+*.pyc
+*.DS_Store
+
+# Ignore les fichiers de configuration des IDE
+.vscode/
+.idea/
+*.iml
+
+# Ignore les fichiers de documentation générés
+docs/**/*.pdf
+docs/**/*.md
+
+# Ignore les fichiers de base de données
+oracle-data/
