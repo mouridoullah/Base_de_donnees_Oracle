@@ -1,0 +1,24 @@
+version: '3'
+services:
+  oracle-db:
+    build:
+      context: .
+    container_name: oracle_db
+    environment:
+      - ORACLE_PWD=YourStrongPassword
+    ports:
+      - "1521:1521"
+      - "5500:5500"
+    volumes:
+      - backup:/backup
+      - logs:/logs
+
+  # adminer:
+  #   image: adminer
+  #   restart: always
+  #   ports:
+  #     - "8082:8080"
+
+volumes:
+  backup:
+  logs:
