@@ -1,0 +1,3 @@
+-- -- 03_drop_tables.sql
+-- DROP TABLE employees PURGE;
+-- DROP USER my_user CASCADE;

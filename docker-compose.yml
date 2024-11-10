@@ -1,24 +1,21 @@
 version: '3'
 services:
-  oracle-db:
-    build:
-      context: .
-    container_name: oracle_db
-    environment:
-      - ORACLE_PWD=YourStrongPassword
+  oracle-xe:
+    build: .
+    container_name: oracle-xe
     ports:
-      - "1521:1521"
-      - "5500:5500"
+      - "${DB_PORT}:1521"
+      - "${EM_PORT}:5500"
+    environment:
+      - ORACLE_PASSWORD=${ORACLE_PASSWORD}
+      - ORACLE_SID=${ORACLE_SID}
+      - ORACLE_PDB=${ORACLE_PDB}
+      - ORACLE_CHARACTERSET=${ORACLE_CHARACTERSET}
+      - APP_USER=${APP_USER}
+      - APP_USER_PASSWORD=${APP_USER_PASSWORD}
+      - INIT_SGA_SIZE=${INIT_SGA_SIZE}
+      - INIT_PGA_SIZE=${INIT_PGA_SIZE}
+      - ORACLE_ENABLE_XDB=true  # Active Oracle SQL Developer Web
     volumes:
-      - backup:/backup
-      - logs:/logs
+      - ./scripts:/container-entrypoint-initdb.d
 
-  # adminer:
-  #   image: adminer
-  #   restart: always
-  #   ports:
-  #     - "8082:8080"
-
-volumes:
-  backup:
-  logs:

@@ -34,3 +34,4 @@ docs/**/*.md
 
 # Ignore les fichiers de base de données
 oracle-data/
+.env
