@@ -133,5 +133,3 @@ Ce projet est sous licence MIT - voir le fichier [LICENSE](LICENSE) pour plus de
 ### Points à personnaliser :
 - **Liens et auteur** : Adaptez les liens vers votre profil GitHub ou d'autres informations de contact.
 - **Dépendances** : Assurez-vous que toutes les dépendances nécessaires (comme le module `oracledb`) sont installées dans votre environnement Python.
-  
-Ce fichier `README.md` couvre les bases de l'installation, de la configuration et de l'utilisation du projet. Il peut être étendu selon vos besoins ou ajout de nouvelles fonctionnalités.

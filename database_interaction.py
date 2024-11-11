@@ -1,35 +1,61 @@
+import os
 import oracledb
+import logging
+from dotenv import load_dotenv
 
-# Paramètres de connexion (à adapter à ton fichier .env ou à ta configuration)
+# Charger les variables d'environnement à partir du fichier .env
+load_dotenv()
+
+# Configuration des logs
+logging.basicConfig(
+    filename='logs/database_logs.log',  # Fichier de logs
+    level=logging.INFO,  # Niveau de log
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+
+# Paramètres de connexion (extraits des variables d'environnement)
 db_config = {
-    "user": "SYS",
-    "password": "monMotDePasse",
-    "dsn": "localhost:1521/XE",  # Remplace par ton dsn ou utilise ORCLPDB1 si c'est le PDB
+    "user": os.getenv("DB_USER"),
+    "password": os.getenv("DB_PASSWORD"),
+    "dsn": os.getenv("DB_DSN"),
     "mode": oracledb.SYSDBA  # Mode sysdba si nécessaire
 }
 
 # Fonction pour exécuter une requête SQL et afficher les résultats
 def execute_query(query):
+    connection = None
+    cursor = None
     try:
-        # Connexion à la base de données
+        logging.info("Connexion à la base de données...")
         connection = oracledb.connect(**db_config)
         cursor = connection.cursor()
 
-        # Exécution de la requête
+        logging.info(f"Exécution de la requête : {query}")
         cursor.execute(query)
-        
-        # Récupération et affichage des résultats
+
+        # Récupération des résultats
         results = cursor.fetchall()
         for row in results:
             print(row)
-        
-        cursor.close()
-        connection.close()
+
+        logging.info("Requête exécutée avec succès.")
+        connection.commit()  # Commit des transactions
+
     except oracledb.DatabaseError as e:
-        print("Erreur lors de l'exécution de la requête :", e)
+        if connection is not None:
+            connection.rollback()  # Rollback en cas d'erreur
+        error_msg = f"Erreur lors de l'exécution de la requête : {e}"
+        print(error_msg)
+        logging.error(error_msg)
+
+    finally:
+        if cursor is not None:
+            cursor.close()
+        if connection is not None:
+            connection.close()
+        logging.info("Connexion à la base de données fermée.")
 
 # Exemple de requêtes pour tester l'accès aux données
-
 # 1. Afficher tous les départements
 print("Départements :")
 execute_query("SELECT * FROM my_app_departments")
@@ -63,3 +89,7 @@ execute_query("""
     JOIN my_app_departments d ON dm.department_id = d.department_id
     JOIN my_app_employees e ON dm.manager_id = e.employee_id
 """)
+
+# Exemple de requête pour tester la gestion des erreurs
+# print("\nTest d'erreur :")
+# execute_query("SELECT * FROM table_inexistante")
