@@ -46,8 +46,8 @@ Ce projet contient une configuration Docker pour exécuter une base de données 
 
 1. Clonez le projet :
    ```bash
-   git clone <url_du_projet>
-   cd <nom_du_projet>
+   git clone https://github.com/mouridoullah/Base_de_donnees_Oracle.git
+   cd Base_de_donnees_Oracle
    ```
 
 2. Configurez les variables d'environnement dans le fichier `.env` :
