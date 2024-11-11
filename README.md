@@ -1,135 +1,128 @@
-# Projet Oracle avec Docker
+# Projet Oracle Database Docker avec Grafana et Prometheus
 
-Ce projet crée une base de données Oracle via Docker, avec un schéma complet incluant des tables pour les départements, les employés, les projets, et les salaires. Les données sont insérées automatiquement lors du démarrage du conteneur à l'aide de scripts d'initialisation SQL.
+Ce projet contient une configuration Docker pour exécuter une base de données Oracle avec un monitoring de performance via Prometheus et Grafana. Il inclut également des scripts d'interaction avec la base de données en Python et des scripts SQL pour initialiser et manipuler les données.
 
 ## Structure du Projet
 
 ```
 .
-├── database_interaction.py      # Script Python pour interagir avec la base de données
-├── docker-compose.yml           # Configuration Docker Compose pour lancer Oracle et les services associés
-├── Dockerfile                   # Dockerfile pour créer l'image Docker Oracle
-├── scripts                      # Répertoire contenant les scripts SQL d'initialisation
-│   ├── 01_create_tables.sql     # Script de création des tables
-│   ├── 02_insert_data.sql       # Script d'insertion des données
-│   └── 03_drop_tables.sql       # Script pour supprimer les tables (utilisé pour réinitialiser la base)
-└── .env                         # Fichier de configuration des variables d'environnement
+├── database_interaction
+│   ├── config.py                 # Configuration de la base de données
+│   ├── execute.py                # Exécution des requêtes SQL
+│   ├── __init__.py               # Fichier d'initialisation de module
+│   ├── logger_config.py          # Configuration du système de logs
+│   ├── manage_transaction.py     # Gestion des transactions SQL
+│   ├── queries.py                # Requêtes SQL
+│   └── __pycache__               # Cache Python compilé
+├── database_interaction.py       # Script principal pour l'interaction DB
+├── docker-compose.yml            # Configuration Docker Compose
+├── Dockerfile                    # Dockerfile pour Oracle Database
+├── LICENSE                       # Licence du projet
+├── logs
+│   └── database_logs.log         # Fichier de logs pour les transactions SQL
+├── main.py                       # Point d'entrée principal du projet
+├── prometheus
+│   └── prometheus.yml            # Configuration de Prometheus
+├── prometheus.yml                # Fichier de configuration pour Prometheus
+├── README.md                     # Documentation du projet
+├── requirements.txt              # Dépendances Python
+├── scripts
+│   ├── 01_create_tables.sql      # Script SQL de création de tables
+│   ├── 02_insert_data.sql        # Script SQL d'insertion de données
+│   └── 03_drop_tables.sql        # Script SQL pour supprimer des tables
+└── teste
+    ├── __init__.py               # Fichier d'initialisation de module de test
+    ├── test_config.py            # Tests pour config.py
+    ├── test_execute.py           # Tests pour execute.py
+    └── test_manage_transaction.py# Tests pour manage_transaction.py
 ```
 
 ## Prérequis
 
-- Docker
-- Docker Compose
-- Python 3.x
-- Oracle Client (pour l'interaction avec la base de données en Python)
+- **Docker et Docker Compose** : Assurez-vous que Docker et Docker Compose sont installés.
+- **Python 3.x** : Pour exécuter les scripts Python, installez les dépendances listées dans `requirements.txt`.
 
-## Configuration
+## Installation
 
-Avant de démarrer le projet, vous devez configurer le fichier `.env` avec les valeurs appropriées pour la base de données Oracle. Un exemple de contenu pour le fichier `.env` :
-
-```env
-ORACLE_PASSWORD=monMotDePasse
-DB_PORT=1521
-EM_PORT=5500
-ORACLE_SID=XE
-ORACLE_PDB=ORCLPDB1
-INIT_SGA_SIZE=1024
-INIT_PGA_SIZE=256
-ORACLE_CHARACTERSET=AL32UTF8
-APP_USER=my_user
-APP_USER_PASSWORD=monAppMotDePasse
-```
-
-## Installation et Démarrage
-
-1. **Clonez le projet** :
-
+1. Clonez le projet :
    ```bash
-   git clone https://github.com/mouridoullah/Base_de_donnees_Oracle.git
-   cd Base_de_donnees_Oracle
+   git clone <url_du_projet>
+   cd <nom_du_projet>
    ```
 
-2. **Construisez et démarrez les services Docker** :
-
-   Utilisez Docker Compose pour construire l'image et démarrer les services.
-
-   ```bash
-   docker-compose up --build
+2. Configurez les variables d'environnement dans le fichier `.env` :
+   ```plaintext
+   DB_USER=SYS
+   DB_PASSWORD=monMotDePasse
+   DB_DSN=localhost:1521/XE
+   DB_PORT=1521
+   EM_PORT=5500
+   ORACLE_SID=XE
+   ORACLE_PDB=ORCLPDB1
+   INIT_SGA_SIZE=1024
+   INIT_PGA_SIZE=256
+   ORACLE_CHARACTERSET=AL32UTF8
    ```
 
-   Ce processus téléchargera l'image Oracle, créera et initialisera la base de données avec les scripts SQL dans le répertoire `scripts`, et démarrera les services.
+3. Installez les dépendances Python :
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-3. **Vérifiez l'état de la base de données** :
+## Lancement du Projet
 
-   Une fois les services démarrés, Oracle sera accessible à `localhost` sur le port 1521 (défini dans `.env`). Vous pouvez accéder à Oracle SQL Developer via le port 5500 pour gérer la base de données via une interface graphique.
+1. Lancez les services Docker :
+   ```bash
+   docker-compose up -d
+   ```
 
-## Interagir avec la base de données via Python
+2. Accédez aux services :
+   - **Base de données Oracle** : accessible sur `localhost:${DB_PORT}`.
+   - **Prometheus** : accessible sur `http://localhost:9090`.
+   - **Grafana** : accessible sur `http://localhost:3000` (utilisateur par défaut : `admin`, mot de passe : `admin`).
 
-Le script `database_interaction.py` vous permet d'interagir avec la base de données Oracle à partir de Python. Vous pouvez l'utiliser pour consulter les données des tables ou exécuter des requêtes SQL. Voici un exemple de code pour récupérer et afficher les employés :
+## Utilisation
 
-```python
-import oracledb
+### Interactions avec la base de données
 
-try:
-    connection = oracledb.connect(
-        user="SYS",
-        password="monMotDePasse",
-        dsn="localhost:1521/XE",  
-        mode=oracledb.SYSDBA
-    )
+- Utilisez `database_interaction.py` pour exécuter des requêtes SQL et interagir avec la base de données.
+- Exécutez le script principal `main.py` pour tester l'accès aux tables et afficher les données dans la console :
 
-    cursor = connection.cursor()
-    cursor.execute("SELECT * FROM my_app_employees")
-    for row in cursor:
-        print(row)
-    cursor.close()
-    connection.close()
+   ```bash
+   python main.py
+   ```
 
-except oracledb.DatabaseError as e:
-    print("Erreur lors de la connexion ou de l'exécution de la requête :", e)
-```
+### Monitoring des Performances avec Grafana et Prometheus
 
-### Dépendances Python
+1. **Ajout de la source de données Prometheus dans Grafana** :
+   - Allez dans **Configuration > Data Sources > Add data source**.
+   - Sélectionnez **Prometheus** et définissez l'URL comme `http://prometheus:9090`.
 
-Installez les dépendances nécessaires pour interagir avec Oracle depuis Python :
+2. **Tableaux de bord Grafana** :
+   - Importez un tableau de bord Oracle prédéfini dans Grafana via **Dashboards > Import**.
+   - Recherchez un tableau de bord Oracle ou importez en utilisant l'ID.
 
-```bash
-pip install oracledb
-```
+## Scripts SQL
 
-## Fonctionnalités du Projet
+- Les scripts dans le dossier `scripts` sont montés automatiquement dans le conteneur Oracle et exécutés au démarrage.
+   - **01_create_tables.sql** : Crée les tables nécessaires.
+   - **02_insert_data.sql** : Insère les données de base dans les tables.
+   - **03_drop_tables.sql** : Supprime les tables pour un nettoyage complet.
 
-- **Dockerisation d'Oracle** : Ce projet met en place un environnement Oracle XE (Express Edition) dans un conteneur Docker.
-- **Initialisation automatisée de la base de données** : Les scripts SQL dans `scripts/` sont exécutés automatiquement lors du démarrage du conteneur, créant les tables et insérant des données.
-- **Interaction avec la base de données** : Utilisation de Python pour exécuter des requêtes SQL et afficher les résultats.
+## Tests
 
-## Comment arrêter les services
-
-Pour arrêter le projet et les conteneurs Docker, vous pouvez utiliser la commande suivante :
-
-```bash
-docker-compose down
-```
-
-Cela arrêtera et supprimera les conteneurs, mais les données seront conservées à moins que vous ne choisissiez de supprimer les volumes avec la commande :
+Les tests unitaires pour les modules d'interaction avec la base de données sont dans le dossier `teste` et peuvent être exécutés avec `pytest` :
 
 ```bash
-docker-compose down -v
+pytest teste/
 ```
 
-## Contribution
+## Logs
 
-Si vous souhaitez contribuer à ce projet, vous pouvez fork ce repository et proposer des modifications via des pull requests.
+Les logs des transactions SQL sont enregistrés dans `logs/database_logs.log`. Ils permettent de suivre les actions et de capturer les erreurs éventuelles.
 
-## Auteurs
-
-- **mouridoullah** – *mn*
+---
 
 ## Licence
 
-Ce projet est sous licence MIT - voir le fichier [LICENSE](LICENSE) pour plus de détails.
-
-
-### Points à personnaliser :
-- **Liens et auteur** : Adaptez les liens vers votre profil GitHub ou d'autres informations de contact.
-- **Dépendances** : Assurez-vous que toutes les dépendances nécessaires (comme le module `oracledb`) sont installées dans votre environnement Python.
+Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.

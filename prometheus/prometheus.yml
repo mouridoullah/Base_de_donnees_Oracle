@@ -1,0 +1,7 @@
+global:
+  scrape_interval: 15s  # Intervalle d'extraction de données
+
+scrape_configs:
+  - job_name: 'oracle'
+    static_configs:
+      - targets: ['oracle-exporter:9161']  # Nom de l'exporter avec le port par défaut 9161
