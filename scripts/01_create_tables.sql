@@ -1,5 +1,5 @@
 -- Création de l'utilisateur
-CREATE USER my_app_user IDENTIFIED BY monAppMotDePasse;
+CREATE USER my_app_user IDENTIFIED BY monMotDePasse;
 GRANT CONNECT, RESOURCE TO my_app_user;
 
 -- Création de la table des départements

@@ -36,6 +36,9 @@ services:
       - "3000:3000"
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin  # Changez le mot de passe pour plus de sécurité
+    volumes:
+      - ./grafana/grafana.ini:/etc/grafana/grafana.ini  # Ajoute le fichier de configuration Grafana
+      - ./grafana/dashboards:/var/lib/grafana/dashboards  # Monte le répertoire des tableaux de bord
     networks:
       - monitoring
 

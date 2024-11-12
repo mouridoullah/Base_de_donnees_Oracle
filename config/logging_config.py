@@ -1,5 +1,8 @@
 import logging
-from database_interaction.config import LOG_LEVEL, LOG_FILE_PATH
+import os
+
+LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
+LOG_FILE_PATH = os.getenv("LOG_FILE_PATH", "logs/database_logs.log")
 
 def setup_logger():
     logging.basicConfig(
@@ -13,3 +16,4 @@ def setup_logger():
     console_handler.setLevel(getattr(logging, LOG_LEVEL.upper(), logging.INFO))
     console_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
     logging.getLogger().addHandler(console_handler)
+    

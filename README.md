@@ -6,35 +6,52 @@ Ce projet contient une configuration Docker pour exécuter une base de données 
 
 ```
 .
+├── .env
+├── config
+│   ├── db_config.py
+│   ├── logging_config.py
+│   └── __pycache__
+│       ├── db_config.cpython-312.pyc
+│       └── logging_config.cpython-312.pyc
+├── create_project_structure.sh
 ├── database_interaction
-│   ├── config.py                 # Configuration de la base de données
-│   ├── execute.py                # Exécution des requêtes SQL
-│   ├── __init__.py               # Fichier d'initialisation de module
-│   ├── logger_config.py          # Configuration du système de logs
-│   ├── manage_transaction.py     # Gestion des transactions SQL
-│   ├── queries.py                # Requêtes SQL
-│   └── __pycache__               # Cache Python compilé
-├── database_interaction.py       # Script principal pour l'interaction DB
-├── docker-compose.yml            # Configuration Docker Compose
-├── Dockerfile                    # Dockerfile pour Oracle Database
-├── LICENSE                       # Licence du projet
+│   ├── crud.py
+│   ├── execute.py
+│   ├── __init__.py
+│   ├── populate_db.py
+│   ├── __pycache__
+│   │   ├── crud.cpython-312.pyc
+│   │   ├── execute.cpython-312.pyc
+│   │   ├── __init__.cpython-312.pyc
+│   │   ├── queries.cpython-312.pyc
+│   │   └── transactions.cpython-312.pyc
+│   ├── queries.py
+│   └── transactions.py
+├── docker-compose.yml
+├── Dockerfile
+├── grafana
+│   ├── dashboards
+│   │   └── custom_dashboard.json
+│   └── grafana.ini
+├── LICENSE
 ├── logs
-│   └── database_logs.log         # Fichier de logs pour les transactions SQL
-├── main.py                       # Point d'entrée principal du projet
+│   └── database_logs.log
+├── main.py
 ├── prometheus
-│   └── prometheus.yml            # Configuration de Prometheus
-├── prometheus.yml                # Fichier de configuration pour Prometheus
-├── README.md                     # Documentation du projet
-├── requirements.txt              # Dépendances Python
+│   └── prometheus.yml
+├── README.md
+├── requirements.txt
 ├── scripts
-│   ├── 01_create_tables.sql      # Script SQL de création de tables
-│   ├── 02_insert_data.sql        # Script SQL d'insertion de données
-│   └── 03_drop_tables.sql        # Script SQL pour supprimer des tables
-└── teste
-    ├── __init__.py               # Fichier d'initialisation de module de test
-    ├── test_config.py            # Tests pour config.py
-    ├── test_execute.py           # Tests pour execute.py
-    └── test_manage_transaction.py# Tests pour manage_transaction.py
+│   ├── 01_create_tables.sql
+│   ├── 02_insert_data.sql
+│   └── 03_drop_tables.sql
+├── struc
+└── tests
+    ├── __init__.py
+    ├── test_config.py
+    ├── test_crud.py
+    ├── test_execute.py
+    └── test_transactions.py
 ```
 
 ## Prérequis
